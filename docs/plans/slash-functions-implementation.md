@@ -25,12 +25,16 @@ git push -u origin personal-features
 ## Architecture Design
 
 ### 1. Slash Function System
-**Location**: `packages/opencode/src/cli/cmd/slash-functions.ts`
+**Locations**: 
+- `packages/opencode/src/cli/cmd/func.ts` (Function manager)
+- `packages/opencode/src/cli/cmd/f.ts` (Function executor)
 
 **Functionality**:
-- Parse `/functionname` commands in CLI
+- Two-command approach: `/func` for management, `/f` for execution
 - Load function definitions from `~/.config/opencode/functions/`
 - Execute predefined prompts with context injection
+- Git-aware function management with semver and atomic commits
+- Dynamic function reloading for immediate availability
 - Integrate with existing opencode session system
 
 ### 2. Function Definition Format
@@ -58,9 +62,19 @@ git push -u origin personal-features
 **Location**: `packages/opencode/src/cli/index.ts`
 
 **Changes**:
-- Add slash function command parser
-- Route `/functionname` to slash function handler
+- Add `/func` command for function management
+- Add `/f` command for function execution
 - Maintain compatibility with existing commands
+
+### 4. Git Integration
+**Location**: `packages/opencode/src/slash/git.ts`
+
+**Functionality**:
+- Detect if functions directory is a git repository
+- Auto-commit function changes with semantic versioning
+- Support git operations (status, commit, push, pull, clone, init)
+- Graceful fallback for non-git environments
+- Atomic commits for each function operation
 
 ## Installation System
 
@@ -93,25 +107,32 @@ git push -u origin personal-features
 
 ## Implementation Steps
 
-### Phase 1: Core Infrastructure
-1. **Create personal-features branch**
-2. **Implement slash function parser** in CLI
-3. **Create function loader** for JSON definitions
-4. **Add basic function execution** framework
+### Phase 1: Core Infrastructure ✅ COMPLETE
+1. ✅ **Create personal-features branch**
+2. ✅ **Implement slash function parser** in CLI
+3. ✅ **Create function loader** for JSON definitions
+4. ✅ **Add basic function execution** framework
 
-### Phase 2: Function System
-1. **Design JSON schema** for function definitions
-2. **Implement context injection** system
-3. **Add error handling** and validation
-4. **Create built-in functions** (readme, summarymd)
+### Phase 2: Two-Command System & Git Integration
+1. **Refactor to two-command approach** (`/func` and `/f`)
+2. **Implement git detection and operations**
+3. **Add semantic versioning for function changes**
+4. **Create function management commands** (create, edit, delete, list)
+5. **Add git commands** (status, commit, push, pull, clone, init)
 
-### Phase 3: Installation System
+### Phase 3: Enhanced Function System
+1. **Improve context injection** system
+2. **Add parameter support** and templating
+3. **Create function validation** and testing
+4. **Add more built-in functions**
+
+### Phase 4: Installation System
 1. **Create installation script**
-2. **Implement wrapper scripts**
+2. **Implement wrapper scripts** with update checking
 3. **Add update mechanism**
 4. **Test on clean environment**
 
-### Phase 4: Documentation & Polish
+### Phase 5: Documentation & Polish
 1. **Write user documentation**
 2. **Add function creation guide**
 3. **Implement help system**
@@ -123,12 +144,14 @@ git push -u origin personal-features
 packages/opencode/src/
 ├── cli/
 │   ├── cmd/
-│   │   ├── slash-functions.ts     # NEW: Slash function handler
+│   │   ├── func.ts                # NEW: Function manager (/func)
+│   │   ├── f.ts                   # NEW: Function executor (/f)
 │   │   └── ...
-│   └── index.ts                   # MODIFIED: Add slash routing
+│   └── index.ts                   # MODIFIED: Add func and f commands
 ├── slash/                         # NEW: Slash function system
 │   ├── loader.ts                  # Function definition loader
 │   ├── executor.ts                # Function execution engine
+│   ├── git.ts                     # NEW: Git integration
 │   ├── context.ts                 # Context injection system
 │   └── types.ts                   # Type definitions
 └── ...
@@ -219,13 +242,30 @@ Current `~/.config/claude/functions/` bash scripts:
 - **Feature complexity**: Start simple, iterate
 - **User adoption**: Clear documentation and examples
 
-## Next Steps
+## Current Status: Phase 1 Complete ✅
 
-1. **Create personal-features branch**
-2. **Implement basic slash function parser**
-3. **Create minimal function loader**
-4. **Test with simple function definition**
-5. **Iterate and expand functionality**
+### Completed:
+- ✅ Personal-features branch created
+- ✅ Basic slash function system implemented
+- ✅ Function loader with JSON definitions
+- ✅ Function executor with context injection
+- ✅ Built-in functions (readme, summarymd)
+- ✅ CLI integration
+
+### Next Steps (Phase 2):
+
+1. **Refactor to two-command system**
+   - Split current `/slash-functions` into `/func` and `/f`
+   - Implement dynamic function reloading
+
+2. **Add git integration**
+   - Create git detection utilities
+   - Implement semantic versioning
+   - Add git management commands
+
+3. **Enhanced function management**
+   - Create, edit, delete functions via CLI
+   - Function validation and error handling
 
 ---
 
